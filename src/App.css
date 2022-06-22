@@ -1,38 +1,190 @@
-.App {
-  text-align: center;
+@import url("https://fonts.googleapis.com/css2?family=Lora&family=Roboto+Slab:wght@300;400&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+:root {
+  --mode: white;
+  --modeOpp: rgb(30, 30, 30);
+  --offsetMode: rgb(216, 216, 216);
+  --offsetModeOpp: rgb(48, 48, 48);
+  --midMode: rgb(136, 136, 136);
+  --green: rgb(0, 215, 0);
+  --red: red;
+  --blue: rgb(33, 118, 255);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+body {
+  background-color: var(--mode);
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+button,
+input,
+select {
+  font-family: "Roboto Slab", serif;
+  font-size: 0.85rem;
+  padding: 7px;
+  color: var(--modeOpp);
+  background-color: var(--mode);
+  border: 1px solid var(--midMode);
+  font-weight: 400;
+  border-radius: 5px;
+}
+
+button {
+  cursor: pointer;
+  transition: 300ms;
+}
+
+img {
+  width: 100%;
+}
+
+header {
+  margin-bottom: 50px;
+}
+
+#app {
+  margin: 25px 75px;
+  font-family: "Roboto Slab", serif;
+  color: var(--modeOpp);
+}
+
+.top-nav {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  height: 50px;
+  position: relative;
+}
+
+.top-nav-right {
+  width: 40vw;
+}
+
+.nav-item {
+  cursor: pointer;
+}
+.nav-item:hover {
+  transform: scale(1.05);
+}
+
+#main-logo {
+  font-size: 2.5rem;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+#search-dropdown {
+  position: absolute;
+  right: 0;
+  top: 50px;
+  padding: 30px;
+  width: 50vw;
+  transition: 500ms;
+  background-color: var(--mode);
+}
+
+.flex-list {
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.all-search-btns {
+  border-bottom: 1px solid var(--offsetMode);
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  justify-content: flex-start;
+}
+
+.all-search-btns button {
+  margin-left: 20px;
+  padding: 10px 15px;
+}
+
+.all-search-btns button:hover {
+  color: var(--mode);
+  background-color: var(--modeOpp);
+}
+
+.search-btn {
+  color: var(--blue);
+  padding: 10px 20px;
+  border-radius: 25px;
+  border: 2px solid var(--blue);
+}
+.search-btn:hover {
+  background-color: var(--blue);
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.story-box {
+  font-family: "Lora", serif;
+  padding: 80px 100px;
+  background-color: var(--offsetMode);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.story-box img {
+  width: 50%;
+  float: right;
+  margin: 0 0 20px 20px;
+}
+
+#con-day-header {
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+}
+
+.con-content {
+  line-height: 1.3;
+}
+
+.con-author {
+  color: var(--offsetModeOpp);
+  font-weight: 400;
+  margin-bottom: 40px;
+}
+
+.con-name {
+  font-size: 2rem;
+  font-weight: 400;
+}
+
+.poem-box {
+  display: flex;
+  justify-content: space-around;
+  padding: 80px 100px;
+  background-color: var(--offsetMode);
+}
+
+.left-poem {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+}
+
+.poem-box img {
+  flex-basis: 50%;
+}
+
+.con-poem {
+  line-height: 2;
+}
+
+.bot-nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 50px;
+}
+
+.bot-nav p {
+  display: flex;
+  align-items: center;
 }

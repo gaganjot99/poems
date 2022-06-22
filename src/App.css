@@ -23,7 +23,8 @@ body {
 
 button,
 input,
-select {
+select,
+textarea {
   font-family: "Roboto Slab", serif;
   font-size: 0.85rem;
   padding: 7px;
@@ -45,6 +46,10 @@ img {
 
 header {
   margin-bottom: 50px;
+}
+
+.green {
+  color: var(--green);
 }
 
 #app {
@@ -95,6 +100,11 @@ header {
   align-items: center;
 }
 
+.flex-just-cent {
+  display: flex;
+  align-items: center;
+}
+
 .all-search-btns {
   border-bottom: 1px solid var(--offsetMode);
   margin-bottom: 15px;
@@ -123,7 +133,7 @@ header {
   color: white;
 }
 
-.story-box {
+.content-box {
   font-family: "Lora", serif;
   padding: 80px 100px;
   background-color: var(--offsetMode);
@@ -159,8 +169,6 @@ header {
 .poem-box {
   display: flex;
   justify-content: space-around;
-  padding: 80px 100px;
-  background-color: var(--offsetMode);
 }
 
 .left-poem {
@@ -187,4 +195,75 @@ header {
 .bot-nav p {
   display: flex;
   align-items: center;
+}
+
+.cont-form {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-around;
+}
+
+.form-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-flow: column;
+  margin: 10px 0;
+}
+
+.form-item label {
+  margin-bottom: 5px;
+  color: var(--blue);
+}
+
+.form-item textarea {
+  resize: none;
+  width: 70%;
+}
+
+.search-results {
+  display: flex;
+  flex-flow: row wrap;
+  margin-top: 40px;
+}
+
+.search-card {
+  width: 300px;
+  background-color: var(--mode);
+  padding: 15px 30px;
+  height: 215px;
+  border-radius: 5px;
+  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12),
+    0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
+
+.search-card h2 {
+  font-weight: lighter;
+}
+
+.search-card h3 {
+  font-size: 0.9rem;
+  font-weight: lighter;
+}
+
+.writing-type-list {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 15px;
+  width: 60%;
+  font-size: 0.9rem;
+}
+
+.author-content-list {
+  list-style: none;
+  margin: 25px 0;
+  font-size: 0.9rem;
+}
+
+.writing-type {
+  margin: 10px 15px;
+}
+
+.card-content {
+  margin: 20px 0;
 }

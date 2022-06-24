@@ -2,17 +2,63 @@ import { useState } from "react";
 import "./App.css";
 import Contentbox from "./Contentbox";
 import Contribute from "./Contribute";
-import Searchcard from "./Searchcard";
-//const temp =
-//  "Lorem ipsum dolor\n sit amet, consectetur adipiscing\n elit. Phasellus ultricies neque ante, \n vel bibendum irat odio.";
+import { useQuery, useLazyQuery, gql } from "@apollo/client";
+import Search from "./search";
+import SearchMenu from "./SearchMenu";
+
 const rootVars = document.querySelector(":root");
 
-const story =
-  " Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas ac libero lectus. Donec a turpis ut felis finibus molestie non et metus. Ut fringilla aliquam ultricies. Sed eget sem tempus, vestibulum sapien vitae, luctus massa. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aliquam viverra vestibulum quam, in scelerisque nisl faucibus eu. Curabitur interdum est quis nisl convallis, nec consectetur erat vulputate. Cras semper porta sem vitae gravida.Praesent tempus mollis gravida. Sed rhoncus, diam nec eleifend vehicula, arcu nisi lacinia sem, eget pretium dui arcu ut quam. Suspendisse id leo quis leo porttitor fringilla. Praesent suscipit neque sed sem rhoncus facilisis. Proin ornare tellus ante, sit amet varius nulla sollicitudin vel. Morbi sit amet lectus scelerisque, tempus est at, efficitur ante. Etiam et sapien sit amet orci porta maximus a vel ex. Sed lobortis risus eget lacus rhoncus scelerisque. Suspendisse ac tellus eget lacus consectetur varius. Fusce ut augue eget leo tincidunt fringilla.Donec lacus libero, tincidunt eu risus ac, mattis sodales erat. Nam dictum tortor vitae ipsum maximus, in laoreet nunc commodo. In aliquet mauris non augue tincidunt condimentum. Nunc vel interdum erat. Maecenas eget ex mauris. Nullam elementum maximus nibh, sed iaculis ligula consectetur a. Aenean varius purus eu malesuada tempor. Suspendisse potenti. Praesent quis pharetra metus. Ut elementum placerat massa non venenatis. Vestibulum consequat euismod turpis dignissim convallis. Donec nec lectus neque. Sed tristique pellentesque dui, a iaculis urna fermentum a. Donec augue nulla, vulputate ut orci quis, pharetra efficitur orci.Proin lacinia mi purus, in lacinia ex tincidunt vehicula. Fusce semper turpis nec nisl convallis fermentum. Maecenas ultricies metus ut luctus fermentum. Suspendisse sed imperdiet nisi, vitae porta justo. Curabitur maximus nulla lectus, in sollicitudin erat molestie eu. Nulla euismod tempor lorem eget pretium. Nulla massa justo, molestie eu porta quis, malesuada ac erat.Vivamus et diam leo. Aliquam mattis mauris risus, ac volutpat erat finibus nec. Interdum et malesuada fames ac ante ipsum primis in faucibus. Aliquam turpis dui, euismod vel lectus sit amet, interdum hendrerit elit. Nam nec pellentesque ipsum. Pellentesque accumsan diam et laoreet ultricies. Nullam ut augue id orci euismod lacinia. Curabitur dignissim dolor quis dictum feugiat. Nulla libero ligula, fringilla ac felis quis, posuere suscipit orci. Aliquam ac velit mauris. Morbi cursus leo sit amet nisl suscipit, ut sollicitudin orci volutpat. Mauris hendrerit lacinia condimentum. Proin egestas dolor et ligula posuere interdum. ";
+const Add_hov = gql`
+  query poemo($poemname: String!) {
+    poem(input: $poemname) {
+      name
+      type
+      author
+      content
+    }
+  }
+`;
+
+// const postData = `query poemo {
+//   poem(input: "wild eyes") {
+//     name
+//     type
+//     author
+//     content
+//   }
+// }`;
+
+// const data = fetch("/graphql", {
+//   method: "POST",
+//   mode: "same-origin",
+//   headers: {
+//     "Content-Type": "application/json",
+//   },
+//   body: JSON.stringify({ query: postData }),
+// })
+//   .then((data) => data.json())
+//   .then((data) => console.log(data));
+
 function App() {
   const [searchStat, setSearchStat] = useState(false);
   const [status, setStatus] = useState("content");
   const [lightMode, setLightMode] = useState(true);
+
+  const { error, loading, data, refetch } = useQuery(Add_hov, {
+    variables: {
+      poemname: "wild eyes",
+    },
+    notifyOnNetworkStatusChange: true,
+  });
+
+  //console.log(loading);
+  //console.log(data);
+  if (loading) {
+    return <p>Loading!!!!</p>;
+  }
+  if (error) {
+    return <p>Error happened</p>;
+  }
 
   const toggleTheme = () => {
     if (lightMode) {
@@ -84,7 +130,7 @@ function App() {
                   width="32"
                   height="32"
                   fill="currentColor"
-                  class="bi bi-brightness-high"
+                  className="bi bi-brightness-high"
                   viewBox="0 0 16 16"
                 >
                   <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z" />
@@ -92,55 +138,7 @@ function App() {
               )}
             </li>
           </ul>
-          {searchStat ? (
-            <div id="search-dropdown">
-              <ul className="flex-list all-search-btns">
-                <li>Browse:-</li>
-                <li>
-                  <button>All Authors</button>
-                </li>
-                <li>
-                  <button>All Poems</button>
-                </li>
-                <li>
-                  <button>All Stories</button>
-                </li>
-              </ul>
-              <ul className="flex-list">
-                <li>
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="Name of poem/story"
-                  ></input>
-                </li>
-                <li>
-                  <input
-                    type="text"
-                    name="author"
-                    placeholder="Author/Poet"
-                  ></input>
-                </li>
-                <li>
-                  <select name="type">
-                    <option value={"both"}>Both</option>
-                    <option value={"poem"}>Poem</option>
-                    <option value={"story"}>Story</option>
-                  </select>
-                </li>
-                <li>
-                  <button
-                    onClick={() => {
-                      setStatus("search");
-                    }}
-                    className="search-btn"
-                  >
-                    Search
-                  </button>
-                </li>
-              </ul>
-            </div>
-          ) : null}
+          {searchStat ? <SearchMenu setStatus={setStatus} /> : null}
         </div>
       </header>
       <div>
@@ -152,11 +150,8 @@ function App() {
         {status === "content" ? (
           <div>
             <Contentbox
-              poemtype={false}
-              name="Mountain's Fury"
-              author="Bernard Russel"
-              image={require("./main.PNG")}
-              content={story}
+              poem={data.poem}
+              image="https://picsum.photos/400/600?random=1"
             />
             <div className="bot-nav">
               <button>More by Same Author</button>
@@ -167,11 +162,11 @@ function App() {
                   width="32"
                   height="32"
                   fill="currentColor"
-                  class="bi bi-arrow-right-short"
+                  className="bi bi-arrow-right-short"
                   viewBox="0 0 16 16"
                 >
                   <path
-                    fill-rule="evenodd"
+                    fillRule="evenodd"
                     d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
                   />
                 </svg>
@@ -181,33 +176,7 @@ function App() {
         ) : status === "contribute" ? (
           <Contribute />
         ) : status === "search" ? (
-          <div>
-            <div className="flex-just-cent">
-              <h1>Search Results</h1>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="40"
-                height="40"
-                fill="currentColor"
-                class="bi bi-arrow-down"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"
-                />
-              </svg>
-            </div>
-            <div className="search-results">
-              <Searchcard
-                name="widow's wail"
-                stories={true}
-                poems={false}
-                type="author"
-                writings={["big days", "hello boys", "holas reposing"]}
-              />
-            </div>
-          </div>
+          <Search refetch={refetch} />
         ) : null}
       </div>
     </div>

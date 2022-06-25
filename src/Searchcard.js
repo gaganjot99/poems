@@ -3,8 +3,7 @@ const Searchcard = (props) => {
     <div
       className="search-card"
       onClick={() => {
-        console.log(props.name);
-        props.onClickHandle(props.type, props.name);
+        props.onClickHand(props.type, props.name);
       }}
     >
       <h2>{props.name}</h2>

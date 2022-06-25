@@ -1,18 +1,18 @@
-const Contentbox = ({ poem, image, loading, error }) => {
+const Contentbox = ({ data, image, loading, error }) => {
   if (loading) {
     return <p>Loading!!!!</p>;
   }
   if (error) {
-    return <p>Error happened</p>;
+    return <p>Error happened{error}</p>;
   }
 
-  if (poem.poemtype === "poem") {
+  if (data.poem.type === "poem") {
     return (
       <div className="poem-box">
         <div className="left-poem">
-          <h2 className="con-name">{poem.name}</h2>
-          <h3 className="con-author">by {poem.author}</h3>
-          {poem.content.split("\n").map((item, i) => {
+          <h2 className="con-name">{data.poem.name}</h2>
+          <h3 className="con-author">by {data.poem.author}</h3>
+          {data.poem.content.split("\n").map((item, i) => {
             return (
               <p className="con-poem">
                 {item}
@@ -28,9 +28,9 @@ const Contentbox = ({ poem, image, loading, error }) => {
     return (
       <div className="story-box">
         <img src={image} alt="random landscape"></img>
-        <h2 className="con-name">{poem.name}</h2>
-        <h3 className="con-author">by {poem.author}</h3>
-        {poem.content.split("\n").map((item, i) => {
+        <h2 className="con-name">{data.poem.name}</h2>
+        <h3 className="con-author">by {data.poem.author}</h3>
+        {data.poem.content.split("\n").map((item, i) => {
           return (
             <p className="con-content">
               {item}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import Contentbox from "./Contentbox";
 import Contribute from "./Contribute";
@@ -8,7 +8,7 @@ import SearchMenu from "./SearchMenu";
 
 const rootVars = document.querySelector(":root");
 
-const Add_hov = gql`
+const ONE_POEM = gql`
   query poemo($poemname: String!) {
     poem(input: $poemname) {
       name
@@ -19,32 +19,77 @@ const Add_hov = gql`
   }
 `;
 
+const ALL_POEMS = gql`
+  query Allpoems($poeminput: poemInput) {
+    allpoems(input: $poeminput) {
+      name
+      author
+      type
+      content
+    }
+  }
+`;
+
+const RANDOM_POEM = gql`
+  query randomP {
+    poem: randompoem {
+      name
+      author
+      type
+      content
+    }
+  }
+`;
+const RANDOM_STORY = gql`
+  query randomS {
+    poem: randomstory {
+      name
+      author
+      type
+      content
+    }
+  }
+`;
+
+const ALL_AUTH = gql`
+  query Allauths {
+    allauthors {
+      name
+      poems
+      stories
+      content
+    }
+  }
+`;
+
 function App() {
   const [searchStat, setSearchStat] = useState(false);
   const [status, setStatus] = useState("content");
   const [lightMode, setLightMode] = useState(true);
-  const [query, setQuery] = useState(gql`
-    query Allauths {
-      allauthors {
-        name
-        poems
-        stories
-        content
-      }
-    }
-  `);
+  const [ContentType, setContentType] = useState("random");
+  const [query1, setQuery1] = useState(ALL_AUTH);
+  const [query, setQuery] = useState(ONE_POEM);
+  const [randomQuery, setRandomQuery] = useState(RANDOM_POEM);
 
-  const { error, loading, data, refetch } = useQuery(Add_hov, {
+  const [
+    getRandomPoem,
+    { loading: randomLoad, error: randomErr, data: randomData },
+  ] = useLazyQuery(randomQuery, { fetchPolicy: "network-only" });
+
+  const { error, loading, data, refetch } = useQuery(query, {
     variables: {
-      poemname: "wild eyes",
+      poemname: "horse shoe",
     },
-    notifyOnNetworkStatusChange: true,
   });
 
   const [
     searchPoems,
     { loading: searchLoad, error: searchErr, data: searchData },
-  ] = useLazyQuery(query);
+  ] = useLazyQuery(query1);
+
+  useEffect(() => {
+    randomContent("poem");
+  }, []);
 
   const toggleTheme = () => {
     if (lightMode) {
@@ -72,6 +117,41 @@ function App() {
         "underline";
     }
   };
+
+  const allPoemsByAuthor = (author) => {
+    setQuery1(ALL_POEMS);
+    searchPoems({
+      variables: {
+        poeminput: {
+          name: "",
+          author: author,
+          type: "",
+        },
+      },
+    });
+    setStatus("search");
+  };
+
+  const randomContent = (type) => {
+    if (type === "poem") {
+      setRandomQuery(RANDOM_POEM);
+      setContentType("random");
+      getRandomPoem();
+    } else {
+      setRandomQuery(RANDOM_STORY);
+      setContentType("random");
+      getRandomPoem();
+    }
+  };
+
+  const namedContent = (name) => {
+    refetch({
+      poemname: name,
+    });
+    setContentType("named");
+    setStatus("content");
+  };
+
   return (
     <div id="app">
       <header className="top-nav">
@@ -129,7 +209,7 @@ function App() {
               setSearchStat={setSearchStat}
               setStatus={setStatus}
               searchPoems={searchPoems}
-              setQuery={setQuery}
+              setQuery1={setQuery1}
             />
           ) : null}
         </div>
@@ -142,15 +222,40 @@ function App() {
       <div className="content-box">
         {status === "content" ? (
           <div>
-            <Contentbox
-              loading={loading}
-              error={error}
-              poem={data.poem}
-              image="https://picsum.photos/400/600?random=1"
-            />
+            {!randomData ? (
+              <h1>Loading</h1>
+            ) : ContentType === "random" ? (
+              <Contentbox
+                loading={randomLoad}
+                error={randomErr}
+                data={randomData}
+                image="https://picsum.photos/400/600?random=1"
+              />
+            ) : (
+              <Contentbox
+                loading={loading}
+                error={error}
+                data={data}
+                image="https://picsum.photos/400/600?random=1"
+              />
+            )}
             <div className="bot-nav">
-              <button>More by Same Author</button>
-              <p>
+              <button
+                onClick={() => {
+                  allPoemsByAuthor(data.poem.author);
+                }}
+              >
+                More by Same Author
+              </button>
+              <p
+                onClick={() => {
+                  if (ContentType === "named") {
+                    randomContent(data.poem.type);
+                  } else {
+                    randomContent(randomData.poem.type);
+                  }
+                }}
+              >
                 Another one
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -177,8 +282,10 @@ function App() {
             loading={searchLoad}
             error={searchErr}
             setStatus={setStatus}
-            setQuery={setQuery}
+            setQuery1={setQuery1}
             searchPoems={searchPoems}
+            setQuery={setQuery}
+            setContent={namedContent}
           />
         ) : null}
       </div>

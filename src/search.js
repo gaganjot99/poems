@@ -5,10 +5,12 @@ const Search = ({
   data,
   refetch,
   setStatus,
-  setQuery,
+  setQuery1,
   searchPoems,
   loading,
   error,
+  setQuery,
+  setContent,
 }) => {
   if (loading) {
     return <p>loading</p>;
@@ -20,7 +22,7 @@ const Search = ({
 
   const onClickCard = (type, name) => {
     if (type === "author") {
-      setQuery(gql`
+      setQuery1(gql`
         query Allpoems($poeminput: poemInput) {
           allpoems(input: $poeminput) {
             name
@@ -40,14 +42,10 @@ const Search = ({
         },
       });
     } else {
-      refetch({
-        poemname: name,
-      });
-      setStatus("content");
+      setContent(name);
     }
   };
 
-  console.log(data.allauthors);
   var type = "author";
   if (data.allauthors) {
     type = "author";
@@ -82,7 +80,7 @@ const Search = ({
                   poems={item.poems}
                   type="author"
                   writings={item.content}
-                  onClickHandle={onClickCard}
+                  onClickHand={onClickCard}
                   id={i}
                 />
               );
@@ -94,7 +92,7 @@ const Search = ({
                   author={item.author}
                   type={item.type}
                   content={item.content}
-                  onClickHandle={onClickCard}
+                  onClickHand={onClickCard}
                   id={i}
                 />
               );

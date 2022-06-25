@@ -19,30 +19,20 @@ const Add_hov = gql`
   }
 `;
 
-// const postData = `query poemo {
-//   poem(input: "wild eyes") {
-//     name
-//     type
-//     author
-//     content
-//   }
-// }`;
-
-// const data = fetch("/graphql", {
-//   method: "POST",
-//   mode: "same-origin",
-//   headers: {
-//     "Content-Type": "application/json",
-//   },
-//   body: JSON.stringify({ query: postData }),
-// })
-//   .then((data) => data.json())
-//   .then((data) => console.log(data));
-
 function App() {
   const [searchStat, setSearchStat] = useState(false);
   const [status, setStatus] = useState("content");
   const [lightMode, setLightMode] = useState(true);
+  const [query, setQuery] = useState(gql`
+    query Allauths {
+      allauthors {
+        name
+        poems
+        stories
+        content
+      }
+    }
+  `);
 
   const { error, loading, data, refetch } = useQuery(Add_hov, {
     variables: {
@@ -51,14 +41,10 @@ function App() {
     notifyOnNetworkStatusChange: true,
   });
 
-  //console.log(loading);
-  //console.log(data);
-  if (loading) {
-    return <p>Loading!!!!</p>;
-  }
-  if (error) {
-    return <p>Error happened</p>;
-  }
+  const [
+    searchPoems,
+    { loading: searchLoad, error: searchErr, data: searchData },
+  ] = useLazyQuery(query);
 
   const toggleTheme = () => {
     if (lightMode) {
@@ -138,7 +124,14 @@ function App() {
               )}
             </li>
           </ul>
-          {searchStat ? <SearchMenu setStatus={setStatus} /> : null}
+          {searchStat ? (
+            <SearchMenu
+              setSearchStat={setSearchStat}
+              setStatus={setStatus}
+              searchPoems={searchPoems}
+              setQuery={setQuery}
+            />
+          ) : null}
         </div>
       </header>
       <div>
@@ -150,6 +143,8 @@ function App() {
         {status === "content" ? (
           <div>
             <Contentbox
+              loading={loading}
+              error={error}
               poem={data.poem}
               image="https://picsum.photos/400/600?random=1"
             />
@@ -176,7 +171,15 @@ function App() {
         ) : status === "contribute" ? (
           <Contribute />
         ) : status === "search" ? (
-          <Search refetch={refetch} />
+          <Search
+            data={searchData}
+            refetch={refetch}
+            loading={searchLoad}
+            error={searchErr}
+            setStatus={setStatus}
+            setQuery={setQuery}
+            searchPoems={searchPoems}
+          />
         ) : null}
       </div>
     </div>

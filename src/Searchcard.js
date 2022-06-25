@@ -1,6 +1,12 @@
 const Searchcard = (props) => {
   return (
-    <div className="search-card">
+    <div
+      className="search-card"
+      onClick={() => {
+        console.log(props.name);
+        props.onClickHandle(props.type, props.name);
+      }}
+    >
       <h2>{props.name}</h2>
       {props.type !== "author" ? <h3>by {props.author}</h3> : null}
       {props.type === "author" ? (

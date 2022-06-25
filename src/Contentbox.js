@@ -1,4 +1,11 @@
-const Contentbox = ({ poem, image }) => {
+const Contentbox = ({ poem, image, loading, error }) => {
+  if (loading) {
+    return <p>Loading!!!!</p>;
+  }
+  if (error) {
+    return <p>Error happened</p>;
+  }
+
   if (poem.poemtype === "poem") {
     return (
       <div className="poem-box">

@@ -1,24 +1,10 @@
-import { useLazyQuery, gql } from "@apollo/client";
 import { useState } from "react";
+import { gql } from "@apollo/client";
 
-const SearchMenu = (props) => {
+const SearchMenu = ({ setSearchStat, setStatus, setQuery, searchPoems }) => {
   const [name, setName] = useState("");
   const [author, setAuthor] = useState("");
-  const [query, setQuery] = useState(gql`
-    query Allauths {
-      allauthors {
-        name
-        poems
-        stories
-        content
-      }
-    }
-  `);
-
-  const [
-    searchPoems,
-    { loading: searchLoad, error: searchErr, data: searchData },
-  ] = useLazyQuery(query);
+  const [type, setType] = useState("");
 
   const allAuthors = () => {
     setQuery(gql`
@@ -33,12 +19,31 @@ const SearchMenu = (props) => {
     `);
 
     searchPoems();
+    setSearchStat(false);
+    setStatus("search");
   };
 
-  if (searchLoad) {
-    return <p>Loading</p>;
-  }
-  console.log(searchData);
+  const allPoems = (poemname = "", poemauthor = "", poemtype = "") => {
+    setQuery(gql`
+      query Allpoems($poeminput: poemInput) {
+        allpoems(input: $poeminput) {
+          name
+          author
+          type
+          content
+        }
+      }
+    `);
+
+    searchPoems({
+      variables: {
+        poeminput: { name: poemname, author: poemauthor, type: poemtype },
+      },
+    });
+    setSearchStat(false);
+    setStatus("search");
+  };
+
   return (
     <div id="search-dropdown">
       <ul className="flex-list all-search-btns">
@@ -47,10 +52,22 @@ const SearchMenu = (props) => {
           <button onClick={allAuthors}>All Authors</button>
         </li>
         <li>
-          <button>All Poems</button>
+          <button
+            onClick={() => {
+              allPoems("", "", "poem");
+            }}
+          >
+            All Poems{" "}
+          </button>
         </li>
         <li>
-          <button>All Stories</button>
+          <button
+            onClick={() => {
+              allPoems("", "", "story");
+            }}
+          >
+            All Stories
+          </button>
         </li>
       </ul>
       <ul className="flex-list search-form">
@@ -77,8 +94,13 @@ const SearchMenu = (props) => {
           ></input>
         </li>
         <li>
-          <select name="type">
-            <option value={"both"}>Both</option>
+          <select
+            onChange={(e) => {
+              setType(e.target.value);
+            }}
+            name="type"
+          >
+            <option value={""}>Both</option>
             <option value={"poem"}>Poem</option>
             <option value={"story"}>Story</option>
           </select>
@@ -86,7 +108,7 @@ const SearchMenu = (props) => {
         <li>
           <button
             onClick={() => {
-              props.setStatus("search");
+              allPoems(name, author, type);
             }}
             className="search-btn"
           >

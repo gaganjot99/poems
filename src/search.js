@@ -1,6 +1,59 @@
+import { gql } from "@apollo/client";
 import Searchcard from "./Searchcard";
 
-const Search = () => {
+const Search = ({
+  data,
+  refetch,
+  setStatus,
+  setQuery,
+  searchPoems,
+  loading,
+  error,
+}) => {
+  if (loading) {
+    return <p>loading</p>;
+  }
+
+  if (error) {
+    return <p>Some search error happened</p>;
+  }
+
+  const onClickCard = (type, name) => {
+    if (type === "author") {
+      setQuery(gql`
+        query Allpoems($poeminput: poemInput) {
+          allpoems(input: $poeminput) {
+            name
+            author
+            type
+            content
+          }
+        }
+      `);
+      searchPoems({
+        variables: {
+          poeminput: {
+            name: "",
+            author: name,
+            type: "",
+          },
+        },
+      });
+    } else {
+      refetch({
+        poemname: name,
+      });
+      setStatus("content");
+    }
+  };
+
+  console.log(data.allauthors);
+  var type = "author";
+  if (data.allauthors) {
+    type = "author";
+  } else {
+    type = "poem";
+  }
   return (
     <div>
       <div className="flex-just-cent">
@@ -20,13 +73,32 @@ const Search = () => {
         </svg>
       </div>
       <div className="search-results">
-        <Searchcard
-          name="widow's wail"
-          stories={true}
-          poems={false}
-          type="author"
-          writings={["big days", "hello boys", "holas reposing"]}
-        />
+        {type === "author"
+          ? data.allauthors.map((item, i) => {
+              return (
+                <Searchcard
+                  name={item.name}
+                  stories={item.stories}
+                  poems={item.poems}
+                  type="author"
+                  writings={item.content}
+                  onClickHandle={onClickCard}
+                  id={i}
+                />
+              );
+            })
+          : data.allpoems.map((item, i) => {
+              return (
+                <Searchcard
+                  name={item.name}
+                  author={item.author}
+                  type={item.type}
+                  content={item.content}
+                  onClickHandle={onClickCard}
+                  id={i}
+                />
+              );
+            })}
       </div>
     </div>
   );

@@ -42,6 +42,7 @@ button {
 
 img {
   width: 100%;
+  height: auto;
 }
 
 header {
@@ -182,7 +183,7 @@ header {
   align-items: center;
 }
 
-.poem-box img {
+.poem-box picture {
   flex-basis: 50%;
 }
 

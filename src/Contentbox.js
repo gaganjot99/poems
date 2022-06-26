@@ -1,3 +1,7 @@
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 const Contentbox = ({ data, loading, error }) => {
   if (loading) {
     return <p>Loading!!!!</p>;
@@ -5,8 +9,6 @@ const Contentbox = ({ data, loading, error }) => {
   if (error) {
     return <p>Error happened{error}</p>;
   }
-
-  console.log(data, loading);
 
   if (!data.poem) {
     return <p>Loading!!!!</p>;
@@ -16,11 +18,17 @@ const Contentbox = ({ data, loading, error }) => {
     return (
       <div className="poem-box">
         <div className="left-poem">
-          <h2 className="con-name">{data.poem.name}</h2>
-          <h3 className="con-author">by {data.poem.author}</h3>
+          <h2 className="con-name">{capitalizeFirstLetter(data.poem.name)}</h2>
+          <h3 className="con-author">
+            by{" "}
+            {data.poem.author
+              .split(" ")
+              .map((item) => capitalizeFirstLetter(item))
+              .join(" ")}
+          </h3>
           {data.poem.content.split("\n").map((item, i) => {
             return (
-              <p className="con-poem">
+              <p className="con-poem" key={i}>
                 {item}
                 <br></br>
               </p>
@@ -68,11 +76,17 @@ const Contentbox = ({ data, loading, error }) => {
             decoding="async"
           ></img>
         </picture>
-        <h2 className="con-name">{data.poem.name}</h2>
-        <h3 className="con-author">by {data.poem.author}</h3>
+        <h2 className="con-name">{capitalizeFirstLetter(data.poem.name)}</h2>
+        <h3 className="con-author">
+          by{" "}
+          {data.poem.author
+            .split(" ")
+            .map((item) => capitalizeFirstLetter(item))
+            .join(" ")}
+        </h3>
         {data.poem.content.split("\n").map((item, i) => {
           return (
-            <p className="con-content">
+            <p className="con-content" key={i}>
               {item}
               <br></br>
             </p>

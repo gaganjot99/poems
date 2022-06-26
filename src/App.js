@@ -68,7 +68,6 @@ function App() {
   const [lightMode, setLightMode] = useState(true);
   const [ContentType, setContentType] = useState("random");
   const [query1, setQuery1] = useState(ALL_AUTH);
-  const [query, setQuery] = useState(ONE_POEM);
   const [randomQuery, setRandomQuery] = useState(RANDOM_POEM);
 
   const [
@@ -76,7 +75,7 @@ function App() {
     { loading: randomLoad, error: randomErr, data: randomData },
   ] = useLazyQuery(randomQuery, { fetchPolicy: "network-only" });
 
-  const { error, loading, data, refetch } = useQuery(query, {
+  const { error, loading, data, refetch } = useQuery(ONE_POEM, {
     variables: {
       poemname: "horse shoe",
     },
@@ -274,13 +273,10 @@ function App() {
         ) : status === "search" ? (
           <Search
             data={searchData}
-            refetch={refetch}
             loading={searchLoad}
             error={searchErr}
-            setStatus={setStatus}
             setQuery1={setQuery1}
             searchPoems={searchPoems}
-            setQuery={setQuery}
             setContent={namedContent}
           />
         ) : null}

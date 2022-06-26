@@ -17,9 +17,7 @@ const Contribute = () => {
   const [author, setAuthor] = useState("");
   const [content, setContent] = useState("");
 
-  const [addContent, { data, error, loading }] = useMutation(ADD_POEM);
-
-  console.log(type, author, content);
+  const [addContent, { error, loading }] = useMutation(ADD_POEM);
 
   if (loading) {
     return <h1>Sending data</h1>;
@@ -37,7 +35,7 @@ const Contribute = () => {
           <label>Type</label>
           <select
             onChange={(e) => {
-              setType(e.target.value);
+              setType(e.target.value.toLowerCase());
             }}
           >
             <option value="poem">Poem</option>
@@ -50,7 +48,7 @@ const Contribute = () => {
             type="text"
             placeholder={type + " name"}
             onChange={(e) => {
-              setName(e.target.value);
+              setName(e.target.value.toLowerCase());
             }}
           ></input>
         </div>
@@ -60,7 +58,7 @@ const Contribute = () => {
             type="text"
             placeholder={type + "'s author name"}
             onChange={(e) => {
-              setAuthor(e.target.value);
+              setAuthor(e.target.value.toLowerCase());
             }}
           ></input>
         </div>

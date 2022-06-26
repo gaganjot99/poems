@@ -3,13 +3,10 @@ import Searchcard from "./Searchcard";
 
 const Search = ({
   data,
-  refetch,
-  setStatus,
   setQuery1,
   searchPoems,
   loading,
   error,
-  setQuery,
   setContent,
 }) => {
   if (loading) {
@@ -72,7 +69,7 @@ const Search = ({
       </div>
       <div className="search-results">
         {type === "author"
-          ? data.allauthors.map((item, i) => {
+          ? data.allauthors.map((item) => {
               return (
                 <Searchcard
                   name={item.name}
@@ -81,11 +78,11 @@ const Search = ({
                   type="author"
                   writings={item.content}
                   onClickHand={onClickCard}
-                  id={i}
+                  key={item.name}
                 />
               );
             })
-          : data.allpoems.map((item, i) => {
+          : data.allpoems.map((item) => {
               return (
                 <Searchcard
                   name={item.name}
@@ -93,7 +90,7 @@ const Search = ({
                   type={item.type}
                   content={item.content}
                   onClickHand={onClickCard}
-                  id={i}
+                  key={item.name}
                 />
               );
             })}

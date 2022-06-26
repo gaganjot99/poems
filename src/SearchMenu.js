@@ -24,7 +24,6 @@ const SearchMenu = ({ setSearchStat, setStatus, setQuery1, searchPoems }) => {
   };
 
   const allPoems = (poemname = "", poemauthor = "", poemtype = "") => {
-    console.log("here I run");
     setQuery1(gql`
       query Allpoems($poeminput: poemInput) {
         allpoems(input: $poeminput) {
@@ -79,7 +78,7 @@ const SearchMenu = ({ setSearchStat, setStatus, setQuery1, searchPoems }) => {
             placeholder="Name of poem/story"
             value={name}
             onChange={(e) => {
-              setName(e.target.value);
+              setName(e.target.value.toLowerCase());
             }}
           ></input>
         </li>
@@ -90,7 +89,7 @@ const SearchMenu = ({ setSearchStat, setStatus, setQuery1, searchPoems }) => {
             placeholder="Author/Poet"
             value={author}
             onChange={(e) => {
-              setAuthor(e.target.value);
+              setAuthor(e.target.value.toLowerCase());
             }}
           ></input>
         </li>

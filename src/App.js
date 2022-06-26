@@ -221,7 +221,7 @@ function App() {
       </div>
       <div className="content-box">
         {status === "content" ? (
-          <div>
+          <div className="col-flex">
             {!randomData ? (
               <h1>Loading</h1>
             ) : ContentType === "random" ? (
@@ -229,18 +229,13 @@ function App() {
                 loading={randomLoad}
                 error={randomErr}
                 data={randomData}
-                image="https://picsum.photos/400/600?random=1"
               />
             ) : (
-              <Contentbox
-                loading={loading}
-                error={error}
-                data={data}
-                image="https://picsum.photos/400/600?random=1"
-              />
+              <Contentbox loading={loading} error={error} data={data} />
             )}
             <div className="bot-nav">
               <button
+                className="bot-nav-item"
                 onClick={() => {
                   allPoemsByAuthor(data.poem.author);
                 }}
@@ -248,6 +243,7 @@ function App() {
                 More by Same Author
               </button>
               <p
+                className="bot-nav-item"
                 onClick={() => {
                   if (ContentType === "named") {
                     randomContent(data.poem.type);

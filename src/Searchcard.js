@@ -1,4 +1,5 @@
 const Searchcard = (props) => {
+  const contentPart = props.content.substring(0, 100);
   return (
     <div
       className="search-card"
@@ -39,7 +40,10 @@ const Searchcard = (props) => {
         </ul>
       ) : (
         <div className="card-content">
-          {props.content.split("\n").map((item, i) => {
+          {contentPart.split("\n").map((item, i) => {
+            if (i > 3) {
+              return null;
+            }
             return (
               <p>
                 {item}
@@ -49,6 +53,7 @@ const Searchcard = (props) => {
           })}
         </div>
       )}
+      <div className="search-lower"></div>
     </div>
   );
 };

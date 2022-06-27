@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { gql } from "@apollo/client";
 
-const SearchMenu = ({ setSearchStat, setStatus, setQuery1, searchPoems }) => {
+const SearchMenu = ({ setSearchStat, setQuery, searchPoems, navigate }) => {
   const [name, setName] = useState("");
   const [author, setAuthor] = useState("");
   const [type, setType] = useState("");
 
   const allAuthors = () => {
-    setQuery1(gql`
+    setQuery(gql`
       query Allauths {
         allauthors {
           name
@@ -20,11 +20,11 @@ const SearchMenu = ({ setSearchStat, setStatus, setQuery1, searchPoems }) => {
 
     searchPoems();
     setSearchStat(false);
-    setStatus("search");
+    navigate("/search");
   };
 
   const allPoems = (poemname = "", poemauthor = "", poemtype = "") => {
-    setQuery1(gql`
+    setQuery(gql`
       query Allpoems($poeminput: poemInput) {
         allpoems(input: $poeminput) {
           name
@@ -41,7 +41,7 @@ const SearchMenu = ({ setSearchStat, setStatus, setQuery1, searchPoems }) => {
       },
     });
     setSearchStat(false);
-    setStatus("search");
+    navigate("/search");
   };
 
   return (

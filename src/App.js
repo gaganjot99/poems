@@ -5,6 +5,7 @@ import Contribute from "./Contribute";
 import { useQuery, useLazyQuery, gql } from "@apollo/client";
 import Search from "./search";
 import SearchMenu from "./SearchMenu";
+import { Routes, Route, useNavigate } from "react-router-dom";
 
 const rootVars = document.querySelector(":root");
 
@@ -64,11 +65,10 @@ const ALL_AUTH = gql`
 
 function App() {
   const [searchStat, setSearchStat] = useState(false);
-  const [status, setStatus] = useState("content");
   const [lightMode, setLightMode] = useState(true);
-  const [ContentType, setContentType] = useState("random");
-  const [query1, setQuery1] = useState(ALL_AUTH);
+  const [query, setQuery] = useState(ALL_AUTH);
   const [randomQuery, setRandomQuery] = useState(RANDOM_POEM);
+  const navigate = useNavigate();
 
   const [
     getRandomPoem,
@@ -84,7 +84,7 @@ function App() {
   const [
     searchPoems,
     { loading: searchLoad, error: searchErr, data: searchData },
-  ] = useLazyQuery(query1);
+  ] = useLazyQuery(query);
 
   useEffect(() => {
     randomContent("poem");
@@ -118,7 +118,7 @@ function App() {
   };
 
   const allPoemsByAuthor = (author) => {
-    setQuery1(ALL_POEMS);
+    setQuery(ALL_POEMS);
     searchPoems({
       variables: {
         poeminput: {
@@ -128,17 +128,17 @@ function App() {
         },
       },
     });
-    setStatus("search");
+    navigate("/search");
   };
 
   const randomContent = (type) => {
     if (type === "poem") {
       setRandomQuery(RANDOM_POEM);
-      setContentType("random");
+      navigate("/");
       getRandomPoem();
     } else {
       setRandomQuery(RANDOM_STORY);
-      setContentType("random");
+      navigate("/");
       getRandomPoem();
     }
   };
@@ -147,8 +147,7 @@ function App() {
     refetch({
       poemname: name,
     });
-    setContentType("named");
-    setStatus("content");
+    navigate("/poem");
   };
 
   return (
@@ -158,7 +157,7 @@ function App() {
           <h1
             id="main-logo"
             onClick={() => {
-              setStatus("content");
+              navigate("/");
             }}
           >
             POEMS
@@ -171,7 +170,7 @@ function App() {
             </li>
             <li
               onClick={() => {
-                setStatus("contribute");
+                navigate("/contribute");
               }}
               className="nav-item"
             >
@@ -206,80 +205,57 @@ function App() {
           {searchStat ? (
             <SearchMenu
               setSearchStat={setSearchStat}
-              setStatus={setStatus}
               searchPoems={searchPoems}
-              setQuery1={setQuery1}
+              setQuery={setQuery}
+              navigate={navigate}
             />
           ) : null}
         </div>
       </header>
-      <div>
-        <p id="con-day-header">
-          <span>Poem</span>/<span>Story</span> of the day
-        </p>
-      </div>
       <div className="content-box">
-        {status === "content" ? (
-          <div className="col-flex">
-            {!randomData ? (
-              <h1>Loading</h1>
-            ) : ContentType === "random" ? (
+        <Routes>
+          <Route
+            path="/"
+            element={
               <Contentbox
                 loading={randomLoad}
                 error={randomErr}
                 data={randomData}
+                allPoemsByAuthor={allPoemsByAuthor}
+                randomContent={randomContent}
               />
-            ) : (
-              <Contentbox loading={loading} error={error} data={data} />
-            )}
-            <div className="bot-nav">
-              <button
-                className="bot-nav-item"
-                onClick={() => {
-                  allPoemsByAuthor(data.poem.author);
-                }}
-              >
-                More by Same Author
-              </button>
-              <p
-                className="bot-nav-item"
-                onClick={() => {
-                  if (ContentType === "named") {
-                    randomContent(data.poem.type);
-                  } else {
-                    randomContent(randomData.poem.type);
-                  }
-                }}
-              >
-                Another one
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="32"
-                  height="32"
-                  fill="currentColor"
-                  className="bi bi-arrow-right-short"
-                  viewBox="0 0 16 16"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
-                  />
-                </svg>
-              </p>
-            </div>
-          </div>
-        ) : status === "contribute" ? (
-          <Contribute />
-        ) : status === "search" ? (
-          <Search
-            data={searchData}
-            loading={searchLoad}
-            error={searchErr}
-            setQuery1={setQuery1}
-            searchPoems={searchPoems}
-            setContent={namedContent}
-          />
-        ) : null}
+            }
+          ></Route>
+
+          <Route
+            path="/poem"
+            element={
+              <Contentbox
+                loading={loading}
+                error={error}
+                data={data}
+                allPoemsByAuthor={allPoemsByAuthor}
+                randomContent={randomContent}
+              />
+            }
+          ></Route>
+
+          <Route
+            path="/search"
+            element={
+              <Search
+                data={searchData}
+                loading={searchLoad}
+                error={searchErr}
+                setQuery={setQuery}
+                searchPoems={searchPoems}
+                setContent={namedContent}
+              />
+            }
+          ></Route>
+
+          <Route path="/contribute" element={<Contribute />}></Route>
+        </Routes>
       </div>
     </div>
   );

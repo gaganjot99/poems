@@ -3,7 +3,7 @@ import Searchcard from "./Searchcard";
 
 const Search = ({
   data,
-  setQuery1,
+  setQuery,
   searchPoems,
   loading,
   error,
@@ -19,7 +19,7 @@ const Search = ({
 
   const onClickCard = (type, name) => {
     if (type === "author") {
-      setQuery1(gql`
+      setQuery(gql`
         query Allpoems($poeminput: poemInput) {
           allpoems(input: $poeminput) {
             name

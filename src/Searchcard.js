@@ -1,3 +1,11 @@
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+const styleGen = (i) => {
+  return { background: `var(--color${i})` };
+};
+
 const Searchcard = (props) => {
   return (
     <div
@@ -6,21 +14,39 @@ const Searchcard = (props) => {
         props.onClickHand(props.type, props.name);
       }}
     >
-      <h2>{props.name}</h2>
-      {props.type !== "author" ? <h3>by {props.author}</h3> : null}
+      {props.type !== "author" ? (
+        <div>
+          <h2>{capitalizeFirstLetter(props.name)}</h2>
+          <h3>
+            by{" "}
+            {props.author
+              .split(" ")
+              .map((item) => capitalizeFirstLetter(item))
+              .join(" ")}
+          </h3>
+        </div>
+      ) : null}
       {props.type === "author" ? (
-        <ul className="writing-type-list">
-          {props.poems === true ? (
-            <li className="green">Poems</li>
-          ) : (
-            <li>Poems</li>
-          )}
-          {props.stories === true ? (
-            <li className="green">Stories</li>
-          ) : (
-            <li>Stories</li>
-          )}
-        </ul>
+        <div>
+          <h2>
+            {props.name
+              .split(" ")
+              .map((item) => capitalizeFirstLetter(item))
+              .join(" ")}
+          </h2>
+          <ul className="writing-type-list">
+            {props.poems === true ? (
+              <li className="green">Poems</li>
+            ) : (
+              <li>Poems</li>
+            )}
+            {props.stories === true ? (
+              <li className="green">Stories</li>
+            ) : (
+              <li>Stories</li>
+            )}
+          </ul>
+        </div>
       ) : null}
       {props.type === "poem" ? (
         <ul className="writing-type">
@@ -56,6 +82,7 @@ const Searchcard = (props) => {
         </div>
       )}
       <div className="search-lower"></div>
+      <div className="color-div" style={styleGen(props.index)}></div>
     </div>
   );
 };

@@ -6,6 +6,7 @@ import { useQuery, useLazyQuery, gql } from "@apollo/client";
 import Search from "./search";
 import SearchMenu from "./SearchMenu";
 import { Routes, Route, useNavigate } from "react-router-dom";
+import { setCookie, getCookie } from "./cookie";
 
 const rootVars = document.querySelector(":root");
 
@@ -65,7 +66,7 @@ const ALL_AUTH = gql`
 
 function App() {
   const [searchStat, setSearchStat] = useState(false);
-  const [lightMode, setLightMode] = useState(true);
+  const [mode, setMode] = useState("light");
   const [query, setQuery] = useState(ALL_AUTH);
   const [randomQuery, setRandomQuery] = useState(RANDOM_POEM);
   const navigate = useNavigate();
@@ -88,21 +89,31 @@ function App() {
 
   useEffect(() => {
     randomContent("poem");
+    const cookieVal = getCookie("mode");
+    if (!cookieVal) {
+      setCookie("mode", "light", "100");
+    } else {
+      if (cookieVal !== mode) {
+        toggleTheme();
+      }
+    }
   }, []);
 
   const toggleTheme = () => {
-    if (lightMode) {
+    if (mode === "light") {
       rootVars.style.setProperty("--mode", "rgb(30, 30, 30)");
       rootVars.style.setProperty("--modeOpp", "white");
       rootVars.style.setProperty("--offsetMode", "rgb(48, 48, 48)");
       rootVars.style.setProperty("--offsetModeOpp", "rgb(216, 216, 216)");
-      setLightMode(false);
+      setMode("dark");
+      setCookie("mode", "dark", "100");
     } else {
       rootVars.style.setProperty("--mode", "white");
       rootVars.style.setProperty("--modeOpp", "rgb(30, 30, 30)");
       rootVars.style.setProperty("--offsetMode", "rgb(216, 216, 216)");
       rootVars.style.setProperty("--offsetModeOpp", "rgb(48, 48, 48)");
-      setLightMode(true);
+      setMode("light");
+      setCookie("mode", "light", "100");
     }
   };
 
@@ -177,7 +188,7 @@ function App() {
               Contribute
             </li>
             <li onClick={toggleTheme} className="nav-item">
-              {lightMode ? (
+              {mode === "light" ? (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="32"

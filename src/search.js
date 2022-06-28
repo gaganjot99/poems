@@ -17,6 +17,10 @@ const Search = ({
     return <p>Some search error happened</p>;
   }
 
+  if (!data) {
+    return <p>data is not valid yet</p>;
+  }
+
   const onClickCard = (type, name) => {
     if (type === "author") {
       setQuery(gql`
@@ -69,7 +73,7 @@ const Search = ({
       </div>
       <div className="search-results">
         {type === "author"
-          ? data.allauthors.map((item) => {
+          ? data.allauthors.map((item, i) => {
               return (
                 <Searchcard
                   name={item.name}
@@ -79,10 +83,11 @@ const Search = ({
                   writings={item.content}
                   onClickHand={onClickCard}
                   key={item.name}
+                  index={i}
                 />
               );
             })
-          : data.allpoems.map((item) => {
+          : data.allpoems.map((item, i) => {
               return (
                 <Searchcard
                   name={item.name}
@@ -91,6 +96,7 @@ const Search = ({
                   content={item.content}
                   onClickHand={onClickCard}
                   key={item.name}
+                  index={i}
                 />
               );
             })}

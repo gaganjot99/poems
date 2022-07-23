@@ -1,0 +1,15 @@
+{
+  "name": "Read poems and Stories",
+  "short_name": "Poems",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "theme-color": "grey",
+  "icons": [
+    {
+      "src": "./logo.png",
+      "size": "283x271",
+      "type": "image/png"
+    }
+  ]
+}

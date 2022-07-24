@@ -9,7 +9,9 @@
     {
       "src": "./logo.png",
       "size": "283x271",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "maskable"
     }
-  ]
+  ],
+  "background_color": "#ffffff"
 }

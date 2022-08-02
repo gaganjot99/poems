@@ -3,13 +3,14 @@ function capitalizeFirstLetter(string) {
 }
 
 const styleGen = (i) => {
-  return { background: `var(--color${i})` };
+  return { background: `var(--color${i % 10})` };
 };
 
 const Searchcard = (props) => {
   return (
     <div
       className="search-card"
+      style={{ "--i": props.index }}
       onClick={() => {
         props.onClickHand(props.type, props.name);
       }}

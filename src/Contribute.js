@@ -16,21 +16,40 @@ const Contribute = () => {
   const [name, setName] = useState("");
   const [author, setAuthor] = useState("");
   const [content, setContent] = useState("");
+  const [stateStatus, setStateStatus] = useState("Submit");
 
-  const [addContent, { error, loading }] = useMutation(ADD_POEM);
-
-  if (loading) {
-    return <h1>Sending data</h1>;
-  }
+  const [addContent, { data, error, loading }] = useMutation(ADD_POEM);
 
   if (error) {
-    return <h1>Some error happened</h1>;
+    setState("Error");
+    setBackState();
+  }
+  if (loading) {
+    setState("Submitting");
+  }
+
+  if (data) {
+    if (data.addcontent) {
+      setBackState("Submit");
+      delete data.addcontent;
+    }
+  }
+  function setBackState() {
+    setTimeout(() => {
+      setState("Submit");
+    }, 6000);
+  }
+
+  function setState(state) {
+    if (stateStatus !== state) {
+      setStateStatus(state);
+    }
   }
 
   return (
     <div>
       <h1>Contribute</h1>
-      <form className="cont-form">
+      <form className="cont-form" data-state="contribute">
         <div className="form-item">
           <label>Type</label>
           <select
@@ -72,8 +91,10 @@ const Contribute = () => {
           ></textarea>
         </div>
         <button
+          data-show={stateStatus}
           className="search-btn"
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
             addContent({
               variables: {
                 input: {
@@ -86,7 +107,7 @@ const Contribute = () => {
             });
           }}
         >
-          Submit
+          <span>{stateStatus}</span>
         </button>
       </form>
     </div>

@@ -68,6 +68,7 @@ header {
   margin: 25px 75px;
   font-family: "Roboto Slab", serif;
   color: var(--modeOpp);
+  transition-duration: 1s;
 }
 
 .top-nav {
@@ -103,8 +104,9 @@ header {
   width: 50vw;
   transition: 500ms;
   background-color: var(--mode);
+  animation: drop-down 0.3s ease-in both;
+  z-index: 20;
 }
-
 .flex-list {
   list-style: none;
   display: flex;
@@ -154,6 +156,7 @@ header {
   font-family: "Lora", serif;
   padding: 80px 100px;
   background-color: var(--offsetMode);
+  animation: drop-down 1s ease-in both;
 }
 
 .story-box img {
@@ -255,6 +258,8 @@ header {
   position: relative;
   overflow: hidden;
   margin: 10px;
+  animation: slide-down 0.3s ease-in both;
+  animation-delay: calc(var(--i) * 0.1s);
 }
 
 .search-card h2 {
@@ -308,6 +313,17 @@ header {
   left: 0;
   width: 100%;
   height: 100%;
+}
+
+[data-show="Submitting"] {
+  background-color: var(--green);
+  border-color: var(--green);
+  color: white;
+}
+[data-show="Error"] {
+  background-color: var(--red);
+  border-color: var(--red);
+  color: white;
 }
 
 @media (max-width: 500px) {
@@ -377,5 +393,25 @@ header {
 
   .bot-nav-item {
     font-size: 0.75rem;
+  }
+}
+
+@keyframes drop-down {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-down {
+  from {
+    transform: translateY(50%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(none);
+    opacity: 1;
   }
 }

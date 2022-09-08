@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./App.css";
 import Contentbox from "./Contentbox";
 import Contribute from "./Contribute";
+import ErrorBoundary from "./ErrorBoundary";
 import { useQuery, useLazyQuery, gql } from "@apollo/client";
 import Search from "./search";
 import SearchMenu from "./SearchMenu";
@@ -69,7 +70,9 @@ function App() {
   const [mode, setMode] = useState("light");
   const [query, setQuery] = useState(ALL_AUTH);
   const [randomQuery, setRandomQuery] = useState(RANDOM_POEM);
+  const [display, setDisplay] = useState("home");
   const navigate = useNavigate();
+  const refEle = useRef();
 
   const [
     getRandomPoem,
@@ -98,6 +101,44 @@ function App() {
       }
     }
   }, []);
+  var useEffCon = 0;
+  useEffect(() => {
+    useEffCon++;
+    if (useEffCon === 1) {
+      return;
+    }
+    window.addEventListener("click", handleWindowClick);
+    return () => {
+      window.removeEventListener("click", handleWindowClick);
+    };
+  }, []);
+
+  const underlineEle = () => {
+    const navItems = document.querySelectorAll(".nav-item");
+
+    navItems.forEach((element) => {
+      element.style.textDecoration = "none";
+    });
+    if (display === "search") {
+      navItems[0].style.textDecoration = "underline";
+    } else if (display === "contribute") {
+      navItems[1].style.textDecoration = "underline";
+    }
+  };
+
+  useEffect(() => {
+    underlineEle();
+  }, [display]);
+
+  function handleWindowClick(e) {
+    if (!document.getElementById("search-dropdown")) {
+      return;
+    }
+    if (!refEle.current.contains(e.target)) {
+      setSearchStat(false);
+      document.getElementById("nav-search-btn").style.textDecoration = "none";
+    }
+  }
 
   const toggleTheme = () => {
     if (mode === "light") {
@@ -117,7 +158,8 @@ function App() {
     }
   };
 
-  const togglemenu = () => {
+  const togglemenu = (e) => {
+    e.stopPropagation();
     if (searchStat) {
       setSearchStat(false);
       document.getElementById("nav-search-btn").style.textDecoration = "none";
@@ -140,6 +182,7 @@ function App() {
       },
     });
     navigate("/search");
+    setDisplay("search");
   };
 
   const randomContent = (type) => {
@@ -159,6 +202,7 @@ function App() {
       poemname: name,
     });
     navigate("/poem");
+    setDisplay("home");
   };
 
   return (
@@ -169,6 +213,7 @@ function App() {
             id="main-logo"
             onClick={() => {
               navigate("/");
+              setDisplay("home");
             }}
           >
             POEMS
@@ -182,6 +227,7 @@ function App() {
             <li
               onClick={() => {
                 navigate("/contribute");
+                setDisplay("contribute");
               }}
               className="nav-item"
             >
@@ -213,14 +259,17 @@ function App() {
               )}
             </li>
           </ul>
-          {searchStat ? (
-            <SearchMenu
-              setSearchStat={setSearchStat}
-              searchPoems={searchPoems}
-              setQuery={setQuery}
-              navigate={navigate}
-            />
-          ) : null}
+          <div ref={refEle}>
+            {searchStat ? (
+              <SearchMenu
+                setSearchStat={setSearchStat}
+                searchPoems={searchPoems}
+                setQuery={setQuery}
+                navigate={navigate}
+                setDisplay={setDisplay}
+              />
+            ) : null}
+          </div>
         </div>
       </header>
       <div className="content-box">
@@ -228,44 +277,57 @@ function App() {
           <Route
             path="/"
             element={
-              <Contentbox
-                loading={randomLoad}
-                error={randomErr}
-                data={randomData}
-                allPoemsByAuthor={allPoemsByAuthor}
-                randomContent={randomContent}
-              />
+              <ErrorBoundary>
+                <Contentbox
+                  loading={randomLoad}
+                  error={randomErr}
+                  data={randomData}
+                  allPoemsByAuthor={allPoemsByAuthor}
+                  randomContent={randomContent}
+                />
+              </ErrorBoundary>
             }
           ></Route>
 
           <Route
             path="/poem"
             element={
-              <Contentbox
-                loading={loading}
-                error={error}
-                data={data}
-                allPoemsByAuthor={allPoemsByAuthor}
-                randomContent={randomContent}
-              />
+              <ErrorBoundary>
+                <Contentbox
+                  loading={loading}
+                  error={error}
+                  data={data}
+                  allPoemsByAuthor={allPoemsByAuthor}
+                  randomContent={randomContent}
+                />
+              </ErrorBoundary>
             }
           ></Route>
 
           <Route
             path="/search"
             element={
-              <Search
-                data={searchData}
-                loading={searchLoad}
-                error={searchErr}
-                setQuery={setQuery}
-                searchPoems={searchPoems}
-                setContent={namedContent}
-              />
+              <ErrorBoundary>
+                <Search
+                  data={searchData}
+                  loading={searchLoad}
+                  error={searchErr}
+                  setQuery={setQuery}
+                  searchPoems={searchPoems}
+                  setContent={namedContent}
+                />
+              </ErrorBoundary>
             }
           ></Route>
 
-          <Route path="/contribute" element={<Contribute />}></Route>
+          <Route
+            path="/contribute"
+            element={
+              <ErrorBoundary>
+                <Contribute />
+              </ErrorBoundary>
+            }
+          ></Route>
         </Routes>
       </div>
     </div>

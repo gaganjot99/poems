@@ -5,13 +5,16 @@ import { ApolloProvider } from "@apollo/client";
 import client from "./client.js";
 import { BrowserRouter } from "react-router-dom";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
+import ErrorBoundary from "./ErrorBoundary";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
       <BrowserRouter>
-        <App />
+        <ErrorBoundary>
+          <App />
+        </ErrorBoundary>
       </BrowserRouter>
     </ApolloProvider>
   </React.StrictMode>

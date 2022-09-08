@@ -209,6 +209,11 @@ header {
 .bot-nav p {
   display: flex;
   align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+.bot-nav p:hover {
+  transform: scale(1.05);
 }
 
 .cont-form {
@@ -326,7 +331,7 @@ header {
   color: white;
 }
 
-@media (max-width: 500px) {
+@media (max-width: 800px) {
   #app {
     margin: 5px 10px;
   }
